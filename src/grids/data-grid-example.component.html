@@ -1,0 +1,43 @@
+<div class="split-scroll">
+  <c8y-data-grid
+    [title]="'Devices' | translate"
+    class="scroll-column"
+    [noMatchingItemsLabel]="'No matching devices.' | translate"
+    [columns]="columns"
+    [rows]="fakeData"
+    [pagination]="pagination"
+    [selectable]="true"
+    [actionControls]="actionControls"
+    [bulkActionControls]="bulkActionControls"
+    (itemsSelect)="handleItemsSelect($event)"
+  >
+    <c8y-column name="name">
+      <!-- <ng-container *c8yHeaderCellRendererDef="let context">-->
+      <!--   <foo-component-->
+      <!--     [inputA]="context.value"-->
+      <!--     [inputC]="context.property"-->
+      <!--   ></foo-component>-->
+      <!-- </ng-container>-->
+
+      <ng-container *c8yCellRendererDef="let context">
+        {{ context.value.toUpperCase() + '!!' }}
+        <!-- <bar-component-->
+        <!--   [inputA]="context.value"-->
+        <!--   [inputB]="context.item"-->
+        <!--   [inputC]="context.property"-->
+        <!-- ></bar-component>-->
+      </ng-container>
+
+      <ng-container *c8yFilteringFormRendererDef="let context">
+        <div class="form-group">
+          test, test
+        </div>
+        <!-- <baz-component-->
+        <!--   [inputA]="context.property"-->
+        <!--   (filterApply)="context.applyFilter($event)"-->
+        <!--   (filterReset)="context.resetFilter($event)"-->
+        <!-- ></baz-component>-->
+      </ng-container>
+    </c8y-column>
+  </c8y-data-grid>
+</div>

@@ -1,0 +1,159 @@
+<c8y-title translate>All devices</c8y-title>
+
+<c8y-action-bar-item itemClass="navbar-form">
+  <div class="input-group input-group-search">
+    <input
+      title="{{ 'Filter' | translate }}"
+      type="search"
+      class="form-control"
+      placeholder="Filter…"
+      (change)="setPipe($event.target.value)"
+    />
+    <span class="input-group-addon">
+      <i c8yIcon="search"></i>
+    </span>
+  </div>
+</c8y-action-bar-item>
+
+<div class="row">
+  <div class="col-xs-6">
+    <c8y-form-group>
+      <c8y-typeahead
+        [(selected)]="selected"
+        placeholder="Select"
+        (onSearch)="setPipe($event)"
+        [required]="true"
+      >
+        <c8y-li
+          *c8yFor="
+            let device of devices;
+            loadMore: 'auto';
+            pipe: filterPipe;
+            notFound: notFoundTemplate
+          "
+          class="p-l-8 p-r-8 c8y-list__item--link"
+          (click)="selected = device; setPipe('')"
+          [active]="selected === device"
+        >
+          <c8y-highlight [text]="device.name || '--'" [pattern]="pattern"></c8y-highlight>
+        </c8y-li>
+        <ng-template #notFoundTemplate>
+          <c8y-li class="bg-gray-lighter p-8" *ngIf="pattern.length > 0">
+            <span>No match found, add new?</span>
+            <button type="button" class="btn btn-primary btn-xs m-l-16">
+              Create new
+            </button>
+          </c8y-li>
+        </ng-template>
+      </c8y-typeahead>
+    </c8y-form-group>
+  </div>
+  <div class="col-xs-6">
+    <c8y-form-group>
+      <c8y-typeahead
+        [(selected)]="selected"
+        placeholder="Select"
+        (onSearch)="setPipe($event)"
+        [required]="true"
+      >
+        <c8y-li
+          *c8yFor="
+            let device of devices;
+            loadMore: 'auto';
+            pipe: filterPipe;
+            notFound: notFoundTemplate
+          "
+          class="p-l-8 p-r-8 c8y-list__item--link"
+          (click)="selected = device; setPipe('')"
+          [active]="selected === device"
+          style="cursor: pointer;"
+        >
+          <c8y-highlight [text]="device.name" [pattern]="pattern"></c8y-highlight>
+          <c8y-li-icon icon="rocket"></c8y-li-icon>
+        </c8y-li>
+        <ng-template #notFoundTemplate>
+          <c8y-li class="bg-gray-lighter p-8" *ngIf="pattern.length > 0">
+            <span>No match found, add new?</span>
+            <button type="button" class="btn btn-primary btn-xs m-l-16">
+              Create new
+            </button>
+          </c8y-li>
+        </ng-template>
+      </c8y-typeahead>
+    </c8y-form-group>
+  </div>
+</div>
+
+Selected: {{ selected.name }}, ID: {{ selected.id }} <br />
+
+<div style="margin-bottom: 20px;">
+  {{ 'Create new device' | translate }}:
+  <input #deviceName />
+  <button type="button" (click)="addDevice(deviceName.value)">
+    <i [c8yIcon]="'plus-circle'"></i>
+  </button>
+</div>
+
+<div class="row">
+  <div class="col-xs-6">
+    <c8y-list-group>
+      <c8y-li
+        *c8yFor="
+          let device of devices;
+          let i = index;
+          pipe: filterPipe;
+          notFound: this.pattern ? resetFilter : undefined
+        "
+      >
+        <c8y-li-radio (onSelect)="updateSelected($event, device)"></c8y-li-radio>
+        <c8y-li-icon [icon]="'rocket'"></c8y-li-icon>
+        {{ i + 1 }}. {{ device.name || '-' }}
+        <c8y-li-footer>
+          Device id: <a [routerLink]="['/device', device.id]">{{ device.id }}</a>
+        </c8y-li-footer>
+
+        <c8y-li-action (click)="deleteDevice(device.id)" icon="times">
+          Delete
+        </c8y-li-action>
+        <c8y-li-action (click)="(false)" icon="rocket">
+          Launch to space
+        </c8y-li-action>
+      </c8y-li>
+    </c8y-list-group>
+
+    <ng-template #resetFilter>
+      <c8y-li class="p-8 text-center">
+        <p>
+          <span translate>No more entries found for filter:</span>&nbsp;<strong>{{
+            pattern
+          }}</strong>
+        </p>
+
+        <button class="btn btn-primary btn-xs m-t-8" translate (click)="pattern = ''; setPipe('')">
+          Reset filter
+        </button>
+      </c8y-li>
+    </ng-template>
+  </div>
+  <div class="col-xs-6">
+    <c8y-list-group>
+      <c8y-li>
+        <c8y-li-checkbox (onSelect)="checkAll = $event"></c8y-li-checkbox>
+      </c8y-li>
+      <c8y-li *c8yFor="let device of devices; loadMore: 'show'">
+        <c8y-li-checkbox
+          [selected]="checkAll"
+          (onSelect)="updateSelected($event, device)"
+        ></c8y-li-checkbox>
+        <c8y-li-icon [icon]="'file'"></c8y-li-icon>
+        {{ device.name || '-' }}
+        <c8y-li-action (click)="deleteDevice(device.id)" icon="times">
+          Delete
+        </c8y-li-action>
+        <c8y-li-collapse>
+          id: <a [routerLink]="['/device', device.id]">{{ device.id }}</a>
+        </c8y-li-collapse>
+      </c8y-li>
+    </c8y-list-group>
+  </div>
+</div>
